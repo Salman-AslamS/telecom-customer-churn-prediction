@@ -1,122 +1,63 @@
 # Telecom Customer Churn Prediction
 
-This project focuses on understanding and predicting customer churn in the
-telecommunications industry using data analysis and machine learning.
+Predicting customer churn for a telecom operator using end-to-end 
+machine learning pipelines in both scikit-learn and Apache Spark (PySpark).
 
-Customer churn is a major business problem for telecom companies because losing
-customers directly impacts recurring revenue, and acquiring new customers is
-often more expensive than retaining existing ones. The purpose of this project
-is to identify the key factors that drive churn and to build a predictive model
-that can help businesses take proactive retention actions.
+## Results
 
----
+| Model | Framework | AUC | Accuracy |
+|---|---|---|---|
+| Random Forest (tuned) | scikit-learn | 0.855 | 78.6% |
+| Random Forest (cross-validated) | PySpark MLlib | 0.860 | 81.4% |
 
 ## Problem Statement
 
-The goal of this project is to answer two main questions:
-
-1. Which customers are more likely to churn?
-2. What customer characteristics and behaviors contribute most to churn?
-
-By answering these questions, the analysis aims to support data-driven decision
-making for customer retention strategies.
-
----
+Customer churn is a major revenue risk for telecom companies — 
+acquiring new customers costs significantly more than retaining 
+existing ones. This project identifies customers at high risk of 
+churning and quantifies the key drivers, to support proactive 
+retention strategies.
 
 ## Dataset
 
-The dataset contains customer-level information including:
-- Demographic details
-- Services subscribed
-- Contract type and tenure
-- Monthly and total charges
-- Churn status (Yes/No)
-
-This is a publicly available telecom churn dataset commonly used for analytical
-and educational purposes.
-
----
+IBM Telco Customer Churn dataset (7,043 customers, 21 features).  
+Source: [Kaggle](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)
 
 ## Approach
 
-The project follows an end-to-end data science workflow:
+### scikit-learn pipeline (`notebooks/churn_sklearn.ipynb`)
+- Exploratory data analysis and correlation analysis
+- Feature engineering and preprocessing
+- Random Forest with GridSearchCV hyperparameter tuning
+- Class imbalance handled via undersampling
+- Model serialised with joblib
 
-1. **Data Inspection and Cleaning**  
-   - Checked for missing values and inconsistencies  
-   - Converted data types and prepared features for analysis  
-
-2. **Exploratory Data Analysis**  
-   - Analyzed churn patterns across contract types, tenure, and charges  
-   - Identified customer segments with higher churn risk  
-
-3. **Feature Engineering and Modeling**  
-   - Encoded categorical variables  
-   - Trained machine learning models to predict churn  
-
-4. **Model Evaluation**  
-   - Evaluated models using appropriate classification metrics  
-   - Selected the model that best balanced performance and interpretability  
-
----
+### PySpark pipeline (`notebooks/churn_pyspark_pipeline.ipynb`)
+- Distributed data loading and cleaning with Spark DataFrames
+- ML Pipeline with StringIndexer, OneHotEncoder, VectorAssembler, StandardScaler
+- Logistic Regression baseline vs Random Forest with CrossValidator
+- Designed to scale to datasets far larger than 7k rows
 
 ## Key Findings
 
-- Customers on month-to-month contracts are significantly more likely to churn
-- Customers with shorter tenure have a higher churn rate
-- High monthly charges combined with low tenure indicate elevated churn risk
+- **Contract type** is the strongest churn predictor — month-to-month 
+  customers churn at significantly higher rates than annual subscribers
+- **Tenure** is highly predictive — churn risk is highest in the first 
+  0–7 months and declines sharply after that
+- **Monthly charges** combined with low tenure indicate the highest-risk 
+  customer segment
 
-These patterns suggest that both contract structure and customer lifecycle stage
-play an important role in retention.
+## Business Recommendations
 
----
+- Target month-to-month customers with contract upgrade incentives
+- Deploy retention interventions within the first 3 months of service
+- Prioritise high-charge, low-tenure customers for outreach campaigns
+- Integrate model scores into a monthly monitoring pipeline
+- Measure campaign effectiveness via A/B testing
 
-## Model Usage in a Business Context
+## Tools
 
-The predictive model developed in this project is intended to support business
-teams rather than operate in isolation.
-
-In a real business setting, the model could be used to:
-- Identify high-risk customers on a regular basis
-- Prioritize retention efforts for customers most likely to churn
-- Support targeted marketing or loyalty campaigns
-
-Thresholds and actions would need to be aligned with business costs and customer
-lifetime value considerations.
-
----
-
-## Recommendations
-
-Based on the analysis and model results, the following actions are recommended:
-
-- Encourage month-to-month customers to move to longer-term contracts
-- Focus early retention efforts on new customers with high monthly charges
-- Monitor churn risk regularly rather than reacting after customers leave
-- Measure the impact of retention strategies through controlled experiments
-
----
-
-## Limitations and Future Work
-
-- The dataset does not include customer service interactions or complaint data
-- The model is trained on historical data and may require periodic retraining
-- Future improvements could include real-time predictions and more advanced
-  ensemble models
-
----
-
-## Tools Used
-
-- Python
-- Pandas and NumPy
-- Scikit-learn
-- Matplotlib
+- Python, pandas, scikit-learn, joblib
+- Apache Spark (PySpark MLlib)
+- Matplotlib, seaborn
 - Google Colab
-
----
-
-## Final Notes
-
-This project demonstrates how data analysis and machine learning can be applied
-to a real business problem, with an emphasis on clarity, interpretability, and
-practical application rather than purely technical complexity.
